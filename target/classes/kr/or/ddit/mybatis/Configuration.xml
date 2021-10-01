@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>   <!-- 이 안에 커넥션을 생성하기 위한 기본정보들이 들어간다 -->
+   <properties resource="kr/or/ddit/db/dbInfo.properties" />   <!-- 클래스패스 형태의 리소스 => 아이바티스, 마이바티스는 모든 형태의 리소스를 클래스패스 형태의 리소스로 표현함. 단, 앞에 '/'가 들어가지 않는다 -->
+   <settings>
+   	<setting name="mapUnderscoreToCamelCase" value="true"/>
+   </settings>
+   <typeAliases>
+      <package name="kr.or.ddit.vo"/>   <!-- 여기 타입알리아스에서 kr.or.ddit.vo 설정하면 xml에 resultType 설정할 때 안넣어줘도 됨 -->
+                              <!-- kr.or.ddit.vo.MemberVO => MemberVO -->
+   </typeAliases>
+   <environments default="dev">
+      <environment id="dev">
+         <transactionManager type="JDBC" />   <!-- transactionManager => DB을 직접 커밋/롤백 하지 않아도 되게 자동으로 트랜젝션을 수행해주는 매니져 -->
+         <dataSource type="POOLED"> 
+            <property name="driver" value="${driverClassName}"/>
+            <property name="url" value="${url}"/>
+            <property name="username" value="${user}"/>
+            <property name="password" value="${password}"/>
+            <property name="poolMaximumActiveConnections" value="${maxTotal}"/>
+            <property name="poolTimeToWait" value="${maxWait}"/> 
+         </dataSource>
+      </environment>
+   </environments>
+   
+   <mappers>
+      <mapper resource="kr/or/ddit/mybatis/mappers/Prod.xml"/>
+   </mappers>
+</configuration>

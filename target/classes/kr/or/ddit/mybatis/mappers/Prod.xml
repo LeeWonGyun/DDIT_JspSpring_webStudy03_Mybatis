@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.prod.dao.ProdDAO">
+	<sql id="fromClause">
+		FROM PRODVIEW
+	</sql>
+	<sql id="searchFrag">
+		<trim prefix="WHERE">
+	    	<if test="searchVO neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(searchVO.searchWord)">
+	    		<choose>
+	    			<when test="searchVO.searchType eq 'name'">
+	    				INSTR(PROD_NAME,#{searchVO.searchWord}) > 0
+	    			</when>
+	    			<when test="searchVO.searchType eq 'lprod'">
+	    				INSTR(LPROD_NM,#{searchVO.searchWord}) > 0
+	    			</when>
+	    			<when test="searchVO.searchType eq 'buyer'">
+	    				INSTR(BUYER_NAME,#{searchVO.searchWord}) > 0
+	    			</when>
+	    			<otherwise>
+	    				INSTR(BUYER_NAME,#{searchVO.searchWord}) > 0
+	    				OR
+	    				INSTR(BUYER_NAME,#{searchVO.searchWord}) > 0
+	    				OR
+	    				INSTR(BUYER_NAME,#{searchVO.searchWord}) > 0
+	    			</otherwise>
+	    		</choose>
+	    	</if>
+		 </trim>
+	</sql>
+	
+	<select id="selectTotalRecord" resultType="int" parameterType="PagingVO">
+		SELECT COUNT(*)
+		<include refid="fromClause"></include>
+		<include refid="searchFrag"/>
+	</select>
+	
+	<select id="selectProdList" resultType="ProdVO" parameterType="PagingVO">
+		 WITH A AS (
+		    SELECT PROD_ID, PROD_NAME, LPROD_NM, BUYER_NAME, PROD_COST, PROD_MILEAGE
+		    <include refid="fromClause"></include>
+		    <include refid = "searchFrag"/>
+		    ORDER BY PROD_ID DESC
+		), B AS (
+			SELECT ROWNUM RNUM, A.*
+			FROM A
+		)
+		SELECT *
+		FROM B
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+     </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
